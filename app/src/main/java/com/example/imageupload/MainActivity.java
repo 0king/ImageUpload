@@ -22,6 +22,7 @@ import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileDescriptor;
@@ -152,10 +153,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void saveImage(){
+        Bitmap bmp = mViewModel.getBitmap();
+        if (bmp==null){
+            Toast.makeText(this, "Select a photo", Toast.LENGTH_SHORT).show();
+            return;
+        }
         //Bitmap photo = (Bitmap) data.getExtras().get("data");
         //imageView.setImageBitmap(photo);
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        mViewModel.getBitmap().compress(Bitmap.CompressFormat.PNG, 100, stream);
+        bmp.compress(Bitmap.CompressFormat.PNG, 100, stream);
         byte[] byteArray = stream.toByteArray();
 
         //help.insert(byteArray);
