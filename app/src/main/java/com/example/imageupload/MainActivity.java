@@ -66,6 +66,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             }));
         });
+        mViewModel.getBitmapLive().observe(this, bitmap -> {
+            mImageView.setImageBitmap(bitmap);
+        });
     }
 
     @Override
