@@ -1,25 +1,18 @@
-package com.example.imageupload;
+package com.example.imageupload.ui;
 
 import android.app.Application;
 import android.graphics.Bitmap;
-import android.os.Environment;
-import android.widget.MultiAutoCompleteTextView;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import com.example.imageupload.data.MainRepo;
+import com.example.imageupload.data.model.Photo;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import okhttp3.MediaType;
-import okhttp3.MultipartBody;
-import okhttp3.RequestBody;
 
 public class ImageViewModel extends AndroidViewModel {
 
@@ -54,7 +47,7 @@ public class ImageViewModel extends AndroidViewModel {
         super(application);
     }
 
-    public void saveBitmap(Photo photo){
-        MainRepo.INSTANCE.savePhoto(getApplication(), photo);
+    public void saveBitmap(){
+        MainRepo.INSTANCE.savePhoto(getApplication(), mBitmap);
     }
 }

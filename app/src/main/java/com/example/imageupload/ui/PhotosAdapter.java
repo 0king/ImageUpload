@@ -1,4 +1,4 @@
-package com.example.imageupload;
+package com.example.imageupload.ui;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -10,6 +10,9 @@ import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.imageupload.R;
+import com.example.imageupload.data.model.Photo;
 
 import java.util.List;
 

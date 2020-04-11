@@ -1,4 +1,4 @@
-package com.example.imageupload;
+package com.example.imageupload.ui;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -24,7 +24,9 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import java.io.ByteArrayOutputStream;
+import com.example.imageupload.R;
+import com.example.imageupload.data.model.Photo;
+
 import java.io.FileDescriptor;
 import java.io.IOException;
 
@@ -158,15 +160,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Toast.makeText(this, "Select a photo", Toast.LENGTH_SHORT).show();
             return;
         }
-        //Bitmap photo = (Bitmap) data.getExtras().get("data");
-        //imageView.setImageBitmap(photo);
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bmp.compress(Bitmap.CompressFormat.PNG, 100, stream);
-        byte[] byteArray = stream.toByteArray();
-
-        //help.insert(byteArray);
-        Photo photo = new Photo(byteArray);
-        mViewModel.saveBitmap(photo);
+        mViewModel.saveBitmap();
     }
     private Bitmap getBitmapFromUri(Uri uri) throws IOException {
         ParcelFileDescriptor parcelFileDescriptor =

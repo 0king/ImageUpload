@@ -1,22 +1,26 @@
-package com.example.imageupload;
+package com.example.imageupload.data;
 
 import android.app.Application;
+import android.graphics.Bitmap;
 import android.os.Environment;
 import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 
+import com.example.imageupload.data.local.PhotoDao;
+import com.example.imageupload.data.local.PhotoDb;
+import com.example.imageupload.data.model.Photo;
+import com.example.imageupload.data.remote.Api;
+
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
 
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
-import io.reactivex.rxjava3.schedulers.Schedulers;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
-import okhttp3.OkHttpClient;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -50,17 +54,27 @@ public enum MainRepo {
         });
     }
 
-    public void savePhoto(Application a, Photo photo){
-        //save in db
+    public void savePhoto(Application a, Bitmap bmp){
         if (mPhotoDao==null)
             initDb(a);
-        PhotoDb.databaseWriteExecutor.execute(()->{
-            mPhotoDao.insert(photo);
-        });
 
-        //upload
-        byte[] arr = photo.getImage();
-        createFile(arr);
+        PhotoDb.databaseWriteExecutor.execute(()->{
+            //save in db
+            //Bitmap photo = (Bitmap) data.getExtras().get("data");
+            //imageView.setImageBitmap(photo);
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            bmp.compress(Bitmap.CompressFormat.PNG, 100, stream);
+            byte[] byteArray = stream.toByteArray();
+
+            //help.insert(byteArray);
+            Photo photo = new Photo(byteArray);
+
+            mPhotoDao.insert(photo);
+
+            //upload to server
+            byte[] arr = photo.getImage();
+            createFile(arr);
+        });
     }
 
     private void createFile(byte[] fileData) {
@@ -88,24 +102,21 @@ public enum MainRepo {
                     file.getName(),
                     requestFile);
 
-            //run on background thread
-            PhotoDb.databaseWriteExecutor.execute(()->{
-                mApi.postPhoto(multipartBody).enqueue(new Callback<ResponseBody>() {
-                    @Override
-                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                        Log.d("durga", response.toString());
-                    }
+            mApi.postPhoto(multipartBody).enqueue(new Callback<ResponseBody>() {
+                @Override
+                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                    Log.d("durga", response.toString());
+                }
 
-                    @Override
-                    public void onFailure(Call<ResponseBody> call, Throwable t) {
-                        Log.d("durga", t.toString());
-                    }
-                });
+                @Override
+                public void onFailure(Call<ResponseBody> call, Throwable t) {
+                    Log.d("durga", t.toString());
+                }
             });
-                    /*.subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-            .subscribe((jsonElement, throwable) -> {
-                Log.d("durga", jsonElement.toString());
+
+            /*//run on background thread
+            PhotoDb.databaseWriteExecutor.execute(()->{
+
             });*/
 
         }

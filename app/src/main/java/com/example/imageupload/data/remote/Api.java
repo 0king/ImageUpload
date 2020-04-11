@@ -1,4 +1,4 @@
-package com.example.imageupload;
+package com.example.imageupload.data.remote;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
